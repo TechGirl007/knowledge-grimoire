@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Knowledge Grimoire | Level Up Your Mind</title>
+    <style>
+      :root {
+        --bg: #0f172a;
+        --panel: #1e293b;
+        --card: #334155;
+        --ink: #f8fafc;
+        --muted: #94a3b8;
+        --gold: #fbbf24;
+        --magic-purple: #a855f7;
+        --magic-cyan: #22d3ee;
+        --magic-red: #ef4444;
+        --shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+        --border: 2px solid #475569;
+      }
+
+      * { box-sizing: border-box; transition: all 0.2s ease; }
+
+      body {
+        margin: 0;
+        font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        background: var(--bg);
+        background-image: radial-gradient(circle at 50% 0%, #1e1b4b 0%, #0f172a 100%);
+        color: var(--ink);
+        min-height: 100vh;
+      }
+
+      .container {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 40px 20px;
+      }
+
+      .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 40px;
+      }
+
+      .header-text h1 {
+        font-size: 3rem;
+        margin: 0;
+        background: linear-gradient(to right, var(--magic-cyan), var(--magic-purple));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        letter-spacing: -1px;
+      }
+
+      .header-text p { color: var(--muted); font-size: 1.1rem; margin: 5px 0 0; }
+
+      /* Stats Bar */
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 20px;
+        margin-bottom: 40px;
+      }
+
+      .stat-card {
+        background: var(--panel);
+        border: var(--border);
+        border-radius: 20px;
+        padding: 20px;
+        text-align: center;
+        box-shadow: var(--shadow);
+      }
+
+      .stat-card .label {
+        display: block;
+        color: var(--muted);
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 10px;
+      }
+
+      .stat-card .value {
+        font-size: 2rem;
+        font-weight: 800;
+        color: var(--gold);
+      }
+
+      /* Layout */
+      .main-grid {
+        display: grid;
+        grid-template-columns: 400px 1fr;
+        gap: 30px;
+      }
+
+      .panel {
+        background: var(--panel);
+        border: var(--border);
+        border-radius: 24px;
+        padding: 30px;
+        box-shadow: var(--shadow);
+      }
+
+      h2 { margin-top: 0; font-size: 1.5rem; margin-bottom: 20px; }
+
+      form { display: grid; gap: 15px; }
+
+      label { display: grid; gap: 5px; font-size: 0.9rem; color: var(--muted); }
+
+      input, select, textarea {
+        background: #0f172a;
+        border: 1px solid #475569;
+        border-radius: 12px;
+        padding: 12px;
+        color: white;
+        font-size: 1rem;
+        font-family: inherit;
+      }
+
+      textarea { min-height: 80px; resize: vertical; }
+
+      .btn {
+        cursor: pointer;
+        border: none;
+        border-radius: 12px;
+        padding: 14px;
+        font-weight: 700;
+        font-size: 1rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+      }
+
+      .btn-primary {
+        background: linear-gradient(135deg, var(--magic-purple), #7c3aed);
+        color: white;
+        box-shadow: 0 4px 15px rgba(168, 85, 247, 0.4);
+      }
+
+      .btn-info {
+        background: rgba(148, 163, 184, 0.1);
+        color: var(--muted);
+        border: 1px solid #475569;
+      }
+      .btn-info:hover { background: rgba(148, 163, 184, 0.2); color: white; }
+
+      /* Vault Section */
+      .vault-actions {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        margin-top: 20px;
+        padding-top: 20px;
+        border-top: 1px solid #475569;
+      }
+
+      .btn-vault {
+        background: #334155;
+        color: var(--magic-cyan);
+        font-size: 0.85rem;
+        border: 1px solid var(--magic-cyan);
+      }
+      .btn-vault:hover { background: var(--magic-cyan); color: #000; }
+
+      .book-list { display: grid; gap: 15px; }
+
+      .book-item {
+        background: var(--card);
+        border-radius: 16px;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        border-left: 5px solid var(--magic-cyan);
+        box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+      }
+
+      .book-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .book-info h3 { margin: 0; font-size: 1.1rem; color: white; }
+      .book-info p { margin: 5px 0 0; color: var(--muted); font-size: 0.9rem; }
+
+      .arcane-insight {
+        background: rgba(0,0,0,0.2);
+        padding: 12px;
+        border-radius: 8px;
+        font-style: italic;
+        font-size: 0.95rem;
+        color: #cbd5e1;
+        border-left: 2px solid var(--gold);
+      }
+
+      .arcane-insight::before {
+        content: "✨ ";
+        color: var(--gold);
+        font-weight: bold;
+      }
+
+      /* TROPHY CARD */
+      .card-preview-container {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 30px;
+      }
+
+      .trophy-card {
+        width: 320px;
+        height: 480px;
+        background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+        border: 8px solid var(--gold);
+        border-radius: 24px;
+        position: relative;
+        padding: 30px;
+        text-align: center;
+        box-shadow: 0 0 50px rgba(251, 191, 36, 0.3);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .card-header .rank { font-size: 0.9rem; color: var(--gold); text-transform: uppercase; letter-spacing: 2px; font-weight: bold; }
+      .card-header .name { font-size: 1.8rem; font-weight: 900; margin: 10px 0; }
+      .card-avatar { width: 120px; height: 120px; background: var(--magic-purple); border-radius: 50%; display: grid; place-items: center; font-size: 3rem; border: 4px solid var(--gold); margin: 20px 0; box-shadow: 0 0 20px var(--magic-purple); }
+      .card-stats { width: 100%; background: rgba(0,0,0,0.3); border-radius: 15px; padding: 15px; text-align: left; }
+      .stat-line { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.9rem; }
+      .stat-line span:last-child { color: var(--magic-cyan); font-weight: bold; }
+      .card-footer { font-style: italic; font-size: 0.85rem; color: var(--muted); border-top: 1px solid #475569; padding-top: 15px; width: 100%; }
+
+      /* MODALS */
+      .modal {
+        display: none;
+        position: fixed;
+        top: 0; left: 0; width: 100%; height: 100%;
+        background: rgba(0,0,0,0.9);
+        z-index: 100;
+        justify-content: center;
+        align-items: center;
+        backdrop-filter: blur(10px);
+      }
+
+      .modal.active { display: flex; }
+      .modal-content {
+        background: var(--panel);
+        padding: 40px;
+        border-radius: 30px;
+        border: var(--border);
+        max-width: 600px;
+        width: 90%;
+        max-height: 80vh;
+        overflow-y: auto;
+      }
+
+      .guide-section { margin-bottom: 30px; }
+      .guide-section h3 { color: var(--magic-cyan); border-bottom: 1px solid #475569; padding-bottom: 10px; }
+      .guide-section p { color: var(--muted); line-height: 1.6; }
+
+      .level-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 20px 0;
+        color: var(--ink);
+      }
+      .level-table th, .level-table td {
+        text-align: left;
+        padding: 12px;
+        border-bottom: 1px solid #475569;
+      }
+      .level-table th { color: var(--gold); text-transform: uppercase; font-size: 0.8rem; }
+
+      #fileInput { display: none; }
+
+      @media (max-width: 850px) {
+        .main-grid { grid-template-columns: 1fr; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <header class="header">
+        <div class="header-text">
+          <h1>Knowledge Grimoire</h1>
+          <p>Slay books. Absorb wisdom. Ascend your rank.</p>
+        </div>
+        <button class="btn btn-info" onclick="openModal('infoModal')">📖 How to Play</button>
+      </header>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <span class="label">Books Conquered</span>
+          <span class="value" id="totalBooks">0</span>
+        </div>
+        <div class="stat-card">
+          <span class="label">Current Archetype</span>
+          <span class="value" id="currentRank">Novice</span>
+        </div>
+        <div class="stat-card">
+          <span class="label">Intellect Level</span>
+          <span class="value" id="intellectLvl">1</span>
+        </div>
+      </div>
+
+      <div class="card-preview-container">
+        <div class="trophy-card" id="trophyCard">
+          <div class="card-header">
+            <div class="rank" id="cardRank">Novice Reader</div>
+            <div class="name">The Scholar</div>
+          </div>
+          <div class="card-avatar" id="cardEmoji">📖</div>
+          <div class="card-stats">
+            <div class="stat-line"><span>Books Slain:</span> <span id="cardBooks">0</span></div>
+            <div class="stat-line"><span>Intellect:</span> <span id="cardIntellect">100</span></div>
+            <div class="stat-line"><span>Status:</span> <span id="cardStatus">Awakening</span></div>
+          </div>
+          <div class="card-footer" id="cardLastBook">
+            "The journey of a thousand miles begins with a single page."
+          </div>
+        </div>
+      </div>
+
+      <div class="main-grid">
+        <section class="panel">
+          <h2>Log a Conquest</h2>
+          <form id="bookForm">
+            <label>Book Title
+              <input type="text" id="title" placeholder="e.g. Watchmen" required />
+            </label>
+            <label>Author
+              <input type="text" id="author" placeholder="e.g. Alan Moore" required />
+            </label>
+            <label>Domain (Category)
+              <select id="category">
+                <option value="Philosophy">Philosophy</option>
+                <option value="Science">Science</option>
+                <option value="Fiction">Fiction</option>
+                <option value="Graphic Novels">Graphic Novels</option>
+                <option value="History">History</option>
+                <option value="Psychology">Psychology</option>
+                <option value="Technical">Technical/Coding</option>
+              </select>
+            </label>
+            <label>Arcane Insight
+              <textarea id="insight" placeholder="What is the one singular truth or enchantment you took from this book?" required></textarea>
+            </label>
+            <button type="submit" class="btn btn-primary">Absorb Knowledge</button>
+          </form>
+          
+          <button class="btn btn-primary" style="width:100%; margin-top:20px; background: var(--gold); color: #000;" onclick="shareCard()">✨ Share My Legend</button>
+
+          <div class="vault-actions">
+            <button class="btn btn-vault" onclick="exportSoulstone()">💾 Save Soulstone</button>
+            <button class="btn btn-vault" onclick="document.getElementById('fileInput').click()">📂 Restore Soulstone</button>
+          </div>
+          <input type="file" id="fileInput" accept=".json" onchange="importSoulstone(event)" />
+        </section>
+
+        <section class="panel">
+          <h2>Library of Conquests</h2>
+          <div id="bookList" class="book-list"></div>
+        </section>
+      </div>
+    </div>
+
+    <!-- INFO MODAL -->
+    <div class="modal" id="infoModal">
+      <div class="modal-content">
+        <h2>The Grimoire Guide</h2>
+        
+        <div class="guide-section">
+          <h3>The Mission</h3>
+          <p>The Knowledge Grimoire is not a list—it is a quest. Every book you finish is a "Conquest." By logging your reads and recording your <strong>Arcane Insights</strong>, you increase your Intellect Level and ascend through the Ranks of Knowledge.</p>
+        </div>
+
+        <div class="guide-section">
+          <h3>The Hierarchy of Knowledge</h3>
+          <table class="level-table">
+            <thead>
+              <tr><th>Books</th><th>Archetype</th><th>Status</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>0-2</td><td>Novice</td><td>Awakening</td></tr>
+              <tr><td>3-9</td><td>Scholar</td><td>Studious</td></tr>
+              <tr><td>10-19</td><td>Sage</td><td>Enlightened</td></tr>
+              <tr><td>20-49</td><td>Archmage</td><td>Omniscient</td></tr>
+              <tr><td>50+</td><td>Eternal</td><td>Transcendental</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="guide-section">
+          <h3>The Local Vault & Soulstones</h3>
+          <p>Your progress is kept in your browser's <strong>Local Vault</strong>. However, caches can be cleared!</p>
+          <p>To prevent loss, use the <strong>Save Soulstone</strong> button to download a <code>.json</code> backup of your legend.</p>
+        </div>
+
+        <button class="btn btn-primary" style="width:100%" onclick="closeModal('infoModal')">I am Ready to Ascend</button>
+      </div>
+    </div>
+
+    <!-- SHARE MODAL -->
+    <div class="modal" id="shareModal">
+      <div class="modal-content">
+        <h2>Your Legend is Ready!</h2>
+        <p>Take a screenshot of your card or share your stats below.</p>
+        <div id="shareText" style="background:#0f172a; padding:20px; border-radius:15px; margin:20px 0; font-family:monospace; color:var(--magic-cyan);"></div>
+        <button class="btn btn-primary" onclick="closeModal('shareModal')">Close</button>
+      </div>
+    </div>
+
+    <script>
+      const STORAGE_KEY = "Grimoire_Data";
+      
+      const ARCHETYPES = [
+        { min: 0, name: "Novice", emoji: "📖", status: "Awakening", color: "#94a3b8" },
+        { min: 3, name: "Scholar", emoji: "📜", status: "Studious", color: "#22d3ee" },
+        { min: 10, name: "Sage", emoji: "🔮", status: "Enlightened", color: "#a855f7" },
+        { min: 20, name: "Archmage", emoji: "👑", status: "Omniscient", color: "#fbbf24" },
+        { min: 50, name: "Eternal", emoji: "🌌", status: "Transcendental", color: "#ef4444" },
+      ];
+
+      function getBooks() {
+        return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+      }
+
+      function saveBooks(books) {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(books));
+      }
+
+      function updateUI() {
+        const books = getBooks();
+        const count = books.length;
+        
+        const archetype = [...ARCHETYPES].reverse().find(a => count >= a.min);
+        const intellect = (count * 125) + 100;
+
+        document.getElementById("totalBooks").textContent = count;
+        document.getElementById("currentRank").textContent = archetype.name;
+        document.getElementById("intellectLvl").textContent = intellect;
+
+        document.getElementById("cardRank").textContent = archetype.name + " Reader";
+        document.getElementById("cardBooks").textContent = count;
+        document.getElementById("cardIntellect").textContent = intellect;
+        document.getElementById("cardStatus").textContent = archetype.status;
+        document.getElementById("cardEmoji").textContent = archetype.emoji;
+        document.getElementById("trophyCard").style.borderColor = archetype.color;
+
+        if(books.length > 0) {
+          const lastBook = books[books.length - 1];
+          document.getElementById("cardLastBook").textContent = `Last Conquest: "${lastBook.title}"`;
+        }
+
+        const listEl = document.getElementById("bookList");
+        listEl.innerHTML = books.slice().reverse().map(b => `
+          <div class="book-item">
+            <div class="book-top">
+              <div class="book-info">
+                <h3>${b.title}</h3>
+                <p>${b.author} • ${b.category}</p>
+              </div>
+              <div style="color:var(--gold)">★</div>
+            </div>
+            <div class="arcane-insight">${b.insight}</div>
+          </div>
+        `).join("");
+      }
+
+      document.getElementById("bookForm").addEventListener("submit", (e) => {
+        e.preventDefault();
+        const books = getBooks();
+        books.push({
+          title: document.getElementById("title").value,
+          author: document.getElementById("author").value,
+          category: document.getElementById("category").value,
+          insight: document.getElementById("insight").value,
+          date: new Date().toLocaleDateString()
+        });
+        saveBooks(books);
+        e.target.reset();
+        updateUI();
+      });
+
+      function exportSoulstone() {
+        const books = getBooks();
+        const dataStr = JSON.stringify(books, null, 2);
+        const blob = new Blob([dataStr], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = "my_knowledge_soulstone.json";
+        link.click();
+        
+        URL.revokeObjectURL(url);
+        alert("Soulstone crystallized! Keep this file safe.");
+      }
+
+      function importSoulstone(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          try {
+            const importedBooks = JSON.parse(e.target.result);
+            if (Array.isArray(importedBooks)) {
+              saveBooks(importedBooks);
+              updateUI();
+              alert("Soulstone shattered! Your memories have been restored.");
+            } else {
+              throw new Error("Invalid format");
+            }
+          } catch (err) {
+            alert("This Soulstone is corrupted or invalid!");
+          }
+        };
+        reader.readAsText(file);
+      }
+
+      function openModal(id) {
+        document.getElementById(id).classList.add("active");
+      }
+
+      function closeModal(id) {
+        document.getElementById(id).classList.remove("active");
+      }
+
+      function shareCard() {
+        const books = getBooks();
+        const archetype = [...ARCHETYPES].reverse().find(a => books.length >= a.min);
+        const text = `⚔️ I have ascended to the rank of ${archetype.name} in the Knowledge Grimoire! \n📚 Books Conquered: ${books.length}\n🧠 Intellect Level: ${(books.length * 125) + 100}\n#KnowledgeGrimoire #ReadingQuest #LevelUp`;
+        
+        document.getElementById("shareText").textContent = text;
+        openModal("shareModal");
+      }
+
+      updateUI();
+    </script>
+  </body>
+</html>
